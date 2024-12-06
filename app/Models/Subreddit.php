@@ -34,13 +34,16 @@ class Subreddit extends BaseModel
         return $this->belongsToMany(User::class, 'favorites', 'subreddit_id', 'user_id');
     }
 
-    /**
-     * Relación: un subreddit puede tener muchos posts.
-     */
     public function posts()
     {
         return $this->hasMany(Post::class);
     }
+
+    public function rules()
+    {
+        return $this->hasMany(Rule::class);
+    }
+
 
     public function scopeUserName($query, $search)
     {

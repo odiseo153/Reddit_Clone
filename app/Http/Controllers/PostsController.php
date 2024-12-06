@@ -37,32 +37,27 @@ class PostsController extends Controller
     public function show($id)
     {
         $post = $this->postService->show($id);
-        
-        if ($post) {
-            return response()->json($post, Response::HTTP_OK);
-        }
 
-        return response()->json(['error' => 'Post no encontrado'], Response::HTTP_NOT_FOUND);
+
+        return response()->json($post, Response::HTTP_OK);
     }
 
     // Crear un nuevo post
     public function store(CreatePostRequest $request)
     {
-
-        $post =$this->postService->store($request->toArray());
-
+          
+        // Crea el post usando el servicio
+        $post = $this->postService->store($request->toArray());
+    
         return response()->json($post, Response::HTTP_CREATED);
     }
+    
 
     // Actualizar un post existente
     public function update(UpdatePostRequest $request, $id)
     {
 
         $post = $this->postService->update($id, $request->toArray());
-
-        if (!$post) {
-            return response()->json(['error' => 'Post no encontrado'], Response::HTTP_NOT_FOUND);
-        }
 
         return response()->json($post, Response::HTTP_OK);
     }
@@ -71,10 +66,6 @@ class PostsController extends Controller
     public function destroy($id)
     {
         $post = $this->postService->destroy($id);
-
-        if ($post['status']==400) {
-            return response()->json($post['message'], Response::HTTP_NOT_FOUND);
-        }
 
         return response()->json($post['message'], Response::HTTP_OK);
     }

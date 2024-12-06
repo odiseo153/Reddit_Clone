@@ -90,12 +90,3 @@ Button.propTypes = {
   endIcon: PropTypes.node,
 };
 
-Button.defaultProps = {
-  variant: "primary",
-  size: "md",
-  className: "",
-  disabled: false,
-  loading: false,
-  startIcon: null,
-  endIcon: null,
-};

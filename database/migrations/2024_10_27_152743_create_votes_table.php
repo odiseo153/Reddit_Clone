@@ -10,15 +10,23 @@ return new class extends Migration
     {
         Schema::create('votes', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->ulidMorphs('votable');  // Crea 'votable_id' y 'votable_type'
+            $table->ulidMorphs('votable'); // Crea 'votable_id' y 'votable_type'
             $table->integer('vote_value');
             $table->ulid('user_id');
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->enum('type', ['upvote', 'downvote']);
-
-            $table->unique(['votable_id', 'votable_type', 'user_id'], 'unique_votes');
             
+            $table->enum('type', ['upvote', 'downvote']); // Enum para el tipo de voto
+
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
+
+           // $table->unique(['votable_id', 'votable_type', 'user_id'], 'unique_votes'); // Evitar votos duplicados
+
+            // Agregar índices para optimizar consultas frecuentes
+            $table->index('user_id');
+            $table->index('votable_id');
+
             $table->timestamps();
         });
     }
@@ -28,3 +36,4 @@ return new class extends Migration
         Schema::dropIfExists('votes');
     }
 };
+

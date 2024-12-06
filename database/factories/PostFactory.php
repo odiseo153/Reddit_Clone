@@ -22,6 +22,7 @@ class PostFactory extends Factory
         return [
             'title' => $this->faker->words(3,true),
             'content' => $this->faker->paragraph(),
+            'image_path' => $this->faker->imageUrl(),
             'subreddit_id' => Subreddit::factory()->create(),
             'user_id' => User::factory()->create(),
         ];

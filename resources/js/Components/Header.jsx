@@ -58,7 +58,7 @@ export const Header = ({
       {/* User Interaction Section */}
       <div className="flex items-center space-x-4">
         {/* Notifications */}
-        <Button variant="ghost" size="icon" aria-label="Notifications">
+        <Button variant="ghost" aria-label="Notifications">
           <Bell className="h-5 w-5" />
         </Button>
 
@@ -68,7 +68,7 @@ export const Header = ({
             <Link to="/submit" aria-label="Create Post">
               <PlusCircle className="h-5 w-5" />
             </Link>
-            <Button variant="ghost" size="icon" aria-label="Messages">
+            <Button variant="ghost" aria-label="Messages">
               <MessageSquare className="h-5 w-5" />
             </Button>
 
@@ -128,7 +128,7 @@ export const Header = ({
         )}
 
         {/* Sidebar Toggle for Mobile */}
-        <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleSidebar}>
+        <Button variant="ghost" size="sm" className="md:hidden" onClick={toggleSidebar}>
           <Menu className="h-5 w-5" />
         </Button>
       </div>

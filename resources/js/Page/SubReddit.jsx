@@ -1,5 +1,5 @@
 import { Button } from "../Components/Button";
-import { ChevronDown, MoreHorizontal, Plus,Star,StarOff } from "lucide-react";
+import { ChevronDown, MoreHorizontal, Plus, Star, StarOff } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Url } from "../Url";
 import { useParams } from "react-router-dom";
@@ -9,6 +9,7 @@ import { useAppContextInfo } from "../PageContainer";
 import { fetchRequest } from "../Tools/FetchBody";
 import { Message } from "../Tools/Mensaje";
 import { useNavigate, Link } from "react-router-dom";
+import { Rule } from "../Components/Rule";
 
 
 
@@ -20,9 +21,12 @@ export default function SubReddit() {
   let navigate = useNavigate();
 
   useEffect(() => {
+    setLoading(true);
+
     const fetchPosts = async () => {
       try {
-        const response = await fetchRequest(`${Url}reddit/${id}`);
+        const url = user == null ? "reddit" : "reddit-auth";
+        const response = await fetchRequest(`${Url + url}/${id}`);
         setReddit(response);
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -35,7 +39,7 @@ export default function SubReddit() {
     }
   }, [id]);
 
-  
+
 
   const deleteSubReddit = async () => {
     try {
@@ -124,7 +128,7 @@ export default function SubReddit() {
                 {reddit.is_join ? "Exit" : "Join"}
               </Button>
               <Button variant="ghost" onClick={handlerFavorite}>
-                {reddit.is_favorite ?<StarOff /> :<Star /> } 
+                {reddit.is_favorite ? <StarOff /> : <Star />}
               </Button>
             </>
           ) : (
@@ -214,7 +218,32 @@ export default function SubReddit() {
               </div>
             </div>
           </div>
+
+          <div className="p-6 bg-[#262627] rounded-lg shadow-md">
+            {reddit.rules && reddit.rules.length > 0 ? (
+              <div className="space-y-4">
+                <h1 className="text-2xl font-bold mb-4">Rules</h1>
+                {reddit.rules.map((e, i) => {
+                  // Length validation
+                  const titleValid = e.title && e.title.length > 0 && e.title.length <= 100; // Example: title must be between 1 and 100 characters
+                  const contentValid = e.content && e.content.length > 0 && e.content.length <= 500; // Example: content must be between 1 and 500 characters
+
+                  return (
+                    titleValid && contentValid ? (
+                      <Rule key={i} title={e.title} content={e.content} />
+                    ) : (
+                      <p key={i} className="text-red-500">Invalid rule: Title and content must meet length requirements.</p>
+                    )
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-gray-500">No rules available.</p>
+            )}
+          </div>
+
         </div>
+
       </div>
     </div>
   );

@@ -21,39 +21,57 @@ class SubRedditRepositoy extends BaseRepository
 
     public function find($name)
     {
+        // Cargar el subreddit con relaciones y contadores necesarios
         $subreddit = Subreddit::select(['id', 'name', 'description', 'photo', 'user_id'])
             ->with([
-                'posts:id,subreddit_id,title,content,user_id',       // Incluye subreddit_id para que funcione la relación
-                'posts.author:id,username,photo',                 // Relación del autor de cada post
-                'posts.subreddit:id,name,photo',                 // Relación del autor de cada post
-                'create_by:id,username,email'               // Usuario que creó el subreddit
+                'posts:id,subreddit_id,title,content,user_id',      // Relación con posts
+                'posts.author:id,username,photo',                    // Relación con el autor del post
+                'rules',                                             // Relación con las reglas
+                'create_by:id,username,email'                        // Usuario que creó el subreddit
             ])
             ->withCount([
-                'posts',                                    // Cuenta el número de posts
-                'users'                                     // Cuenta el número de usuarios relacionados
+                'posts',  // Contar posts
+                'users'   // Contar usuarios relacionados
             ])
             ->where('name', $name)
-            ->firstOrFail();
+            ->firstOrFail();  // Obtener el subreddit o lanzar un error si no existe
     
-        $user = Auth::user();
-        
-        if ($user) {
+        // Si el usuario está autenticado, agregamos los campos adicionales
+        if (Auth::check()) {
+            $user = Auth::user();
+            
+            // Verificar si el usuario ha unido el subreddit y si lo tiene en favoritos
             $subreddit->is_join = $user->subreddits()->where('subreddit_id', $subreddit->id)->exists();
             $subreddit->is_favorite = $user->favorites()->where('subreddit_id', $subreddit->id)->exists();
         }
     
-        return $subreddit;
+        return $subreddit;  // Retornar la información del subreddit
     }
     
     
     
+    
+
 
     public function indexHome()
     {
-        $reddits = Subreddit::orderBy('name')->select(['id','name','photo'])->get();
-
-        return $reddits;
+        $columns = ['id', 'name', 'photo'];
+        $data = [];
+    
+        // Obtenemos todos los subreddits
+        $data['reddits'] = Subreddit::orderBy('name')->select($columns)->get();
+    
+        // Si el usuario está autenticado, cargamos sus subreddits
+        if (Auth::check()) {
+            $data['redditsJoin'] = Auth::user()->subreddits()->select($columns)->get();
+        } else {
+            $data['redditsJoin'] = [];
+        }
+    
+        return $data;
     }
+    
+    
 
     public function destroy($id){
         $subreddit = Subreddit::findOrFail($id);

@@ -13,6 +13,7 @@ class Post extends BaseModel
         'content',
         'subreddit_id',
         'user_id',
+        'image_path'
     ];
 
     /**

@@ -65,10 +65,13 @@ class UsersController extends Controller
         $request->validate([
             'username' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|unique:users,email,' . $id,
+            'photo' => 'sometimes|string',
+            'description' => 'sometimes|string',
             'password' => 'sometimes|string|min:8'
         ]);
 
-        $data = $request->only(['username', 'email']);
+        $data = $request->only(['username', 'email', 'photo', 'description']);
+
         
         // Si se envía una nueva contraseña, encriptarla
         if ($request->has('password')) {

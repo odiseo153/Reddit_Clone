@@ -6,25 +6,26 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('rules', function (Blueprint $table) {
             $table->ulid('id')->primary();
-
             $table->string('title');
-            $table->text('content');
-            $table->text('image_path')->nullabe();
+            $table->string('content');
             $table->ulid('subreddit_id');
-            $table->ulid('user_id');
-
             $table->foreign('subreddit_id')->references('id')->on('subreddits')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('rules');
     }
 };

@@ -7,9 +7,6 @@ use App\Models\User;
 use App\Models\Comment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Vote>
- */
 class VoteFactory extends Factory
 {
     /**
@@ -19,15 +16,22 @@ class VoteFactory extends Factory
      */
     public function definition()
     {
-        // Generar aleatoriamente el modelo relacionado (Post o Comment)
+        // Seleccionar aleatoriamente entre un Post o un Comment existente
         $votableType = $this->faker->randomElement([Post::class, Comment::class]);
-        $votable = $votableType::factory()->create();
+
+        // Obtener un ID existente del modelo seleccionado
+        $votableId = $votableType::query()->inRandomOrder()->value('id');
+
+        // Asegurar que haya un votable disponible
+        if (!$votableId) {
+            throw new \Exception("No hay registros en $votableType para asignar un voto.");
+        }
 
         return [
-            'votable_id' => $votable->id,
+            'votable_id' => $votableId,
             'votable_type' => $votableType,
             'vote_value' => $this->faker->randomElement([-1, 1]), // -1 para downvote, 1 para upvote
-            'user_id' =>User::factory()->create(),
+            'user_id' => User::query()->inRandomOrder()->value('id') ?: User::factory()->create()->id,
             'type' => $this->faker->randomElement(['upvote', 'downvote']),
         ];
     }

@@ -6,14 +6,17 @@ import { useAppContextInfo } from "../PageContainer";
 import formatDate from "../Tools/FormatDate";
 import { Avatar } from "../Components/Avatar";
 import { Post } from "../Components/Post/Post";
+import { CommentComponent } from "../Components/Comment";
 
 export default function UserProfile() {
   const { user } = useAppContextInfo();
   const [loading, setLoading] = useState(!user);
-  const [activeTab, setActiveTab] = useState("Overview"); // Estado para el tab activo
+  const [activeTab, setActiveTab] = useState("Overview"); 
+  
 
   useEffect(() => {
     if (user) setLoading(false);
+  console.log(user)
   }, [user]);
 
   if (!user) {
@@ -175,7 +178,7 @@ const Overview = ({ user }) => (
 
 const PostsComponent = () => {
   const { user } = useAppContextInfo();
-  const posts = user.posts; 
+  const posts = user.posts ?? []; 
   console.log(posts)
 
   return( 
@@ -252,12 +255,28 @@ const Favorites = () => {
   );
 }
 
-const Comments = ({ user }) => (
-  <div>
+const Comments = () => {
+ const {user} = useAppContextInfo();
+ const comments = user.comments ?? [];
+
+  return(
+    <div>
     <h2 className="text-xl font-bold mb-4">Comments</h2>
-    <p>{user?.username} hasn't commented yet.</p>
+ 
+    {comments.length > 0 ?
+    <div className="space-y-6">
+      {comments.map((comment, index) => {
+        return(
+          <CommentComponent comment={comment} profile={true} />
+        )
+      })}
+    </div>
+    :
+    <p>{user?.username} hasn't posted yet.</p>
+  }
   </div>
-);
+)
+};
 
 const Upvotes = ({ user }) => (
   <div>

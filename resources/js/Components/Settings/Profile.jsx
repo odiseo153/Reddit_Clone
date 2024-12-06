@@ -1,17 +1,23 @@
 import { useState } from "react";
 import { ChevronRight, X } from "lucide-react";
-import axios from "axios";
 import { useAppContextInfo } from "../../PageContainer";
 import { Url } from "../../Url";
+import { fetchRequest } from "../../Tools/FetchBody";
+import { Message } from "../../Tools/Mensaje";
+import LoadingSpinner from "../Loading";
+import { Modal } from "./Modal";
+
 
 export default function Profile() {
   const [activeModal, setActiveModal] = useState("");
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     description: "",
     photo: "",
+    banner: "",
   });
-  const {user} = useAppContextInfo();
+  const {user,setUser} = useAppContextInfo();
 
   const userId = user.id; // Reemplaza esto con el ID real del usuario
 
@@ -27,27 +33,30 @@ export default function Profile() {
   };
 
   const handleSave = async () => {
+    setLoading(true);
     try {
-      await axios.put(`${Url}user/${userId}`, formData);
-      alert("Profile updated successfully!");
+      const response = await fetchRequest(`${Url}users/${userId}`,'PUT',formData);
+      Message.successMessage("Informacion actualizada correctamente");
+      setUser(response);
+      setLoading(false);
       handleCloseModal();
     } catch (error) {
       console.error("Error updating profile:", error);
-      alert("Failed to update profile.");
+      Message.errorMessage("Hubo un error ")
     }
   };
 
   const menuItems = [
     { label: "Display Name", key: "username", description: "Change your username" },
-    { label: "About Description", key: "description", description: "Update your bio" },
+    { label: "About Description", key: "description", description: "Update your description" },
     { label: "Avatar", key: "photo", description: "Upload your avatar" },
   ];
 
+
+
   return (
     <div className="min-h-screen bg-[#1a1a1b] text-white">
-      <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-3xl font-medium mb-6">Profile</h1>
-
+      <div className="max-w-4xl mx-auto p-2">
         <div className="space-y-12">
           <section>
             <h2 className="text-xl font-medium mb-6">General</h2>
@@ -74,8 +83,10 @@ export default function Profile() {
 
       {/* Modals */}
       {menuItems.map((item) => (
+        <div>
+        {!loading ? 
         <Modal
-          key={item.key}
+        key={item.key}
           isOpen={activeModal === item.key}
           onClose={handleCloseModal}
         >
@@ -103,24 +114,18 @@ export default function Profile() {
             <button
               onClick={handleSave}
               className="px-4 py-2 bg-blue-600 rounded text-white hover:bg-blue-500"
-            >
+              >
               Save
             </button>
           </div>
         </Modal>
+        :
+        <LoadingSpinner />
+        }
+      </div>
       ))}
     </div>
   );
 }
 
-function Modal({ isOpen, onClose, children }) {
-  if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-[#1a1a1b] rounded-lg shadow-lg w-11/12 max-w-md p-6 relative">
-        {children}
-      </div>
-    </div>
-  );
-}

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Core\Http\Requests\BaseFormRequest;
 
-class CreatePostRequest extends BaseFormRequest
+class CreateRuleRequest extends BaseFormRequest
 {
 
     public function authorize(): bool
@@ -12,7 +12,7 @@ class CreatePostRequest extends BaseFormRequest
         return true;
     }
 
-    
+   
 
 
     public function rules(): array
@@ -21,8 +21,6 @@ class CreatePostRequest extends BaseFormRequest
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'subreddit_id' => 'required|string|exists:subreddits,id', 
-            'user_id' => 'required|string|exists:users,id', 
-            'image_path' => 'nullable|string',
         ];
     }
 }

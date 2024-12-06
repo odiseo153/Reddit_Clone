@@ -37,38 +37,46 @@ class PostRepository extends BaseRepository
             ->orderBy('subreddits.name') // Ordena por nombre del subreddit
             ->select([
                 'posts.id',       // Selecciona el ID del post
+                'posts.image_path',       // Selecciona el ID del post
                 'posts.title',    // Selecciona el título del post
                 'posts.content',  // Selecciona el contenido del post
                 'subreddits.name as subreddit_name', // Agrega el nombre del subreddit
                 'subreddits.photo as subreddit_photo' // Agrega la foto del subreddit
             ])
+            ->withCount(['votes','comments']) // Cuenta los votos del post
             ->get();
     
         return $posts;
     }
     
     public function find($id)
-{
-    // Obtiene el post con las relaciones necesarias
-    $post = Post::with([
-        'author:id,username,photo', // Incluye el autor con su ID y nombre de usuario
-        'subreddit:id,name,photo', // Incluye el subreddit asociado con su ID, nombre y foto
-        'comments:id,content,created_at,post_id,user_id', // Incluye los comentarios con sus campos específicos
-        'comments.user:id,username,photo' // Incluye los usuarios de los comentarios con su ID, nombre y foto
-    ])
-    ->select([
-    'id',         // ID del post
-        'title',      // Título del post
-        'content',     // Contenido del post
-        'user_id',
-        'subreddit_id'    
-    ])
-    ->withCount(['votes'])
-    ->where('id', $id) // Filtra por el ID del post
-    ->firstOrFail();   // Lanza una excepción si no se encuentra el post
+    {
+        // Obtiene el post con las relaciones necesarias
+        $post = Post::with([
+            'author:id,username,photo', // Incluye el autor con su ID y nombre de usuario
+            'subreddit:id,name,description,photo,created_at',
+            'subreddit.posts', // Relación para contar los posts del subreddit
+            'subreddit.users', // Relación para contar los usuarios del subreddit
+            'comments:id,content,created_at,post_id,user_id', // Incluye los comentarios con sus campos específicos
+            'comments.user:id,username,photo' // Incluye los usuarios de los comentarios con su ID, nombre y foto
+        ])
+        ->select([
+            'id',         // ID del post
+            'title',      // Título del post
+            'content',    // Contenido del post
+            'image_path',    // Contenido del post
+            'user_id',    // ID del usuario
+            'subreddit_id' // ID del subreddit
+        ])
+        ->withCount(['votes','subreddit'])
+        
+        ->where('id', $id) // Filtra por el ID del post
+        ->firstOrFail();   // Lanza una excepción si no se encuentra el post
+    
+        return $post;
+    }
 
-    return $post;
-}
+    
 
  
     

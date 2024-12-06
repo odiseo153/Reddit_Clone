@@ -20,8 +20,9 @@ export const fetchRequest = async (url, method = "GET", data = null, contentType
         const result = await response.json();
 
         if (!response.ok) {
-            throw new Error(result.message || "Something went wrong");
+            console.log(result)
         }
+
 
         return result;
     } catch (error) {

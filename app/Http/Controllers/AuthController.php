@@ -66,16 +66,20 @@ class AuthController extends Controller
     }
 
     $user = User::with([
-            'comments:id,content,created_at,user_id',
-            'posts:id,title,content,created_at,user_id,subreddit_id',
-            'posts.author:id,username,photo',  
-            'posts.subreddit:id,name,photo',  
-            'own_subreddits:id,name,photo,created_at,description,user_id',
-            'favorites:id,name,photo,created_at,description,user_id',
-        ])
-        ->withCount(['comments', 'posts', 'own_subreddits'])
-        ->where('id', $userId)
-        ->firstOrFail();
+        'comments:id,content,created_at,user_id,post_id',
+        'comments.user:id,username,photo',
+        'comments.post:id,created_at,subreddit_id',
+        'comments.post.subreddit:id,name,photo',
+        'posts:id,title,content,created_at,user_id,subreddit_id',
+        'posts.author:id,username,photo',  
+        'posts.subreddit:id,name,photo',  
+        'own_subreddits:id,name,photo,created_at,description,user_id',
+        'favorites:id,name,photo,created_at,description,user_id',
+    ])
+    ->withCount(['comments', 'posts', 'own_subreddits'])
+    ->where('id', $userId)
+    ->firstOrFail();
+    
 
     return response()->json([
         'user' => $user,

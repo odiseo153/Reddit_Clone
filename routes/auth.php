@@ -6,10 +6,6 @@ use Illuminate\Support\Facades\Route;
 
 
 // Route for authenticated user information
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
 
 Route::post('/login', [AuthController::class, 'login']);
 

@@ -25,7 +25,6 @@ export const AppProvider = ({ children }) => {
                     setUser(response.user);
                 }
             } catch (err) {
-                console.error("Error fetching user data:", err);
                 setError("Failed to fetch user data.");
             } finally {
                 setIsLoading(false);

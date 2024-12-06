@@ -51,7 +51,21 @@ class SubRedditController extends Controller
         return response()->json($subreddit);
     }
 
+    public function showAuth($nam)
+    {
+        $subreddit = $this->redditService->show($nam);
+        
+        return response()->json($subreddit);
+    }
+
     public function join($id)
+    {
+        $response = $this->redditService->join($id);
+        
+        return response()->json($response);
+    }
+
+    public function rule($id)
     {
         $response = $this->redditService->join($id);
         

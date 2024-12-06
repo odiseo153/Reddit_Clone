@@ -11,7 +11,7 @@ export default function Home() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetchRequest(`${Url}posts`);
+        const response = await fetchRequest(`${Url}posts?with=author,subreddit&count=comments,votes`);
         setPosts(response.data || []);
       } catch (err) {
         console.error("Error fetching posts:", err);
@@ -24,10 +24,9 @@ export default function Home() {
     fetchPosts();
   }, []);
 
-
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900">
+      <div className="flex items-center justify-center min-h-screen bg-[#1A1A1B]">
         <span className="text-white text-lg">Loading posts...</span>
       </div>
     );
@@ -35,21 +34,21 @@ export default function Home() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900">
+      <div className="flex items-center justify-center min-h-screen bg-[#1A1A1B]">
         <span className="text-red-500 text-lg">{error}</span>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 p-4 bg-gray-900">
-      <div className="text-white space-y-6">
+    <div className="flex-1 p-4 bg-[#0d0d0e]">
+      <div className="max-w-3xl mx-auto space-y-6">
         {posts.length > 0 ? (
           posts.map((post, i) => (
-            <Post post={post} />
+            <Post key={i} post={post} />
           ))
         ) : (
-        <div className="text-center text-gray-500">No posts available.</div>
+          <div className="text-center text-gray-400">No posts available.</div>
         )}
       </div>
     </div>

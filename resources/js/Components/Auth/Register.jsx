@@ -4,6 +4,7 @@ import { useAppContextInfo } from '../../PageContainer';
 import Modal from '../Modal';
 import { Message } from '../../Tools/Mensaje';
 import LoadingSpinner from '../Loading';
+import { fetchRequest } from '../../Tools/FetchBody';
 
 export function Register({ isOpen, onClose }) {
     const [newUser, setNewUser] = useState({
@@ -30,17 +31,8 @@ export function Register({ isOpen, onClose }) {
         setLoading(true);
 
         try {
-            const response = await fetch(`${Url}users`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newUser),
-            });
+            const response = await fetchRequest(`${Url}users`,'POST',newUser);
 
-            if (!response.ok) {
-                throw new Error('Registration failed. Please check your inputs.');
-            }
-
-            const data = await response.json();
             Message.successMessage('Registration successful! Welcome!');
             console.log(data)
             setUser(data);

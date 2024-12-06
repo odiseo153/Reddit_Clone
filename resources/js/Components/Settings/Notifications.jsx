@@ -9,8 +9,7 @@ export default function Notifications() {
 
   return (
     <div className="min-h-screen bg-[#1a1a1b] text-white">
-      <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-3xl font-medium mb-6">Notification</h1>
+      <div className="max-w-4xl mx-auto p-2">
       
         <div className="space-y-12">
           <section>
